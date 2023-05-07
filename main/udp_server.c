@@ -23,7 +23,7 @@
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
 
-#define PORT CONFIG_EXAMPLE_PORT
+#define PORT 3333
 
 static const char *TAG = "example";
 
@@ -136,6 +136,11 @@ static void udp_server_task(void *pvParameters)
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string...
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
                 ESP_LOGI(TAG, "%s", rx_buffer);
+
+                if(strcmp(rx_buffer,"sw")==0){
+                    ESP_LOGI(TAG, "UDP Command received");
+                    xTaskNotifyGive(*((TaskHandle_t *) pvParameters));
+                }
 
                 int err = sendto(sock, rx_buffer, len, 0, (struct sockaddr *)&source_addr, sizeof(source_addr));
                 if (err < 0) {
