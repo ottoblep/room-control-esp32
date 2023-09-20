@@ -51,8 +51,10 @@ static void custom_udp_server_task(void *pvParameters)
         int err = bind(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
             ESP_LOGE(TAG, "Socket unable to bind: errno %d", errno);
+            break;
+        } else {
+            ESP_LOGI(TAG, "Socket bound, port %d", PORT);
         }
-        ESP_LOGI(TAG, "Socket bound, port %d", PORT);
 
         struct sockaddr_storage source_addr; // Large enough for both IPv4 or IPv6
         socklen_t socklen = sizeof(source_addr);
