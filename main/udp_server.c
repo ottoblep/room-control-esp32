@@ -17,14 +17,13 @@
 
 #define PORT 3333
 
-static const char *TAG = "example";
+static const char *TAG = "udp_server";
 
 static void custom_udp_server_task(void *pvParameters)
 {
     char rx_buffer[128];
     char addr_str[128];
     int addr_family = (int)pvParameters;
-    int ip_protocol = 0;
     struct sockaddr_in6 dest_addr;
 
     while (1) {
@@ -34,15 +33,9 @@ static void custom_udp_server_task(void *pvParameters)
             dest_addr_ip4->sin_addr.s_addr = htonl(INADDR_ANY);
             dest_addr_ip4->sin_family = AF_INET;
             dest_addr_ip4->sin_port = htons(PORT);
-            ip_protocol = IPPROTO_IP;
-        } else if (addr_family == AF_INET6) {
-            bzero(&dest_addr.sin6_addr.un, sizeof(dest_addr.sin6_addr.un));
-            dest_addr.sin6_family = AF_INET6;
-            dest_addr.sin6_port = htons(PORT);
-            ip_protocol = IPPROTO_IPV6;
         }
 
-        int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
+        int sock = socket(addr_family, SOCK_DGRAM, 0);
         if (sock < 0) {
             ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
             break;
@@ -102,7 +95,7 @@ static void custom_udp_server_task(void *pvParameters)
         if (sock != -1) {
             ESP_LOGE(TAG, "Shutting down socket and restarting...");
             shutdown(sock, 0);
-            close(sock);
+            closesocket(sock);
         }
     }
     vTaskDelete(NULL);

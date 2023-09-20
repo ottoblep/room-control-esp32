@@ -21,7 +21,7 @@ static void state_controller_task(void *pvParameters)
     // Wait for other tasks to initialize
     vTaskDelay(pdMS_TO_TICKS(400));
     // Send disable light signal to be sure its off
-    xTaskNotify( transmitter_handle, 1, eSetValueWithOverwrite );
+    // xTaskNotify( transmitter_handle, 1, eSetValueWithOverwrite );
 
     uint32_t message;
 
@@ -73,7 +73,7 @@ void app_main(void)
      */
     ESP_ERROR_CHECK(example_connect());
 
-    xTaskCreate(state_controller_task, "state_controller", 1024, NULL, 4, &state_controller_handle);
+    xTaskCreate(state_controller_task, "state_controller", 4096, NULL, 4, &state_controller_handle);
     xTaskCreate(transmitter_task, "transmitter", 4096, NULL, 3, &transmitter_handle);
     xTaskCreate(custom_udp_server_task, "udp_server", 4096, (void *) &state_controller_handle, 2, &udp_server_handle);
 }
