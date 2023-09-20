@@ -1,7 +1,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "hal/gpio_types.h"
 #include "send_codes.c"
 #include "udp_server.c"
+#include "gpio_handler.c"
 
 TaskHandle_t state_controller_handle = NULL;
 TaskHandle_t transmitter_handle = NULL;
@@ -72,6 +74,7 @@ void app_main(void)
      * examples/protocols/README.md for more information about this function.
      */
     ESP_ERROR_CHECK(example_connect());
+    setup_button_handler(&state_controller_handle);
 
     xTaskCreate(state_controller_task, "state_controller", 4096, NULL, 4, &state_controller_handle);
     xTaskCreate(transmitter_task, "transmitter", 4096, NULL, 3, &transmitter_handle);
