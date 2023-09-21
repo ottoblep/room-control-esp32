@@ -15,7 +15,6 @@
 TaskHandle_t* state_task = NULL;
 
 void IRAM_ATTR button_isr() {
-    ESP_LOGE("isr", "GPIO ISR Triggered");
     xTaskNotifyGive(*state_task);
 }
 

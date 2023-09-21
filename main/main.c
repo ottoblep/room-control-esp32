@@ -75,6 +75,7 @@ void app_main(void)
      */
     ESP_ERROR_CHECK(example_connect());
     setup_button_handler(&state_controller_handle);
+    setup_debo_gpio();
 
     xTaskCreate(state_controller_task, "state_controller", 4096, NULL, 4, &state_controller_handle);
     xTaskCreate(transmitter_task, "transmitter", 4096, NULL, 3, &transmitter_handle);
