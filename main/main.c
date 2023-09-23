@@ -62,20 +62,17 @@ static void transmitter_task(void *pvParameters) {
     }
 }
 
-void app_main(void) {
+void app_main(void)
+{
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-    /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
-     * Read "Establishing Wi-Fi or Ethernet Connection" section in
-     * examples/protocols/README.md for more information about this function.
-     */
     ESP_ERROR_CHECK(example_connect());
+
     setup_button_handler(&state_controller_handle);
     setup_debo_gpio();
 
-    xTaskCreate(state_controller_task, "state_controller", 4096, NULL, 4, &state_controller_handle);
-    xTaskCreate(transmitter_task, "transmitter", 4096, NULL, 3, &transmitter_handle);
-    xTaskCreate(custom_udp_server_task, "udp_server", 4096, (void *) &state_controller_handle, 2, &udp_server_handle);
+    xTaskCreate(state_controller_task, "state_controller", 4096, NULL, 1, &state_controller_handle);
+    xTaskCreate(transmitter_task, "transmitter", 4096, NULL, 2, &transmitter_handle);
+    xTaskCreate(custom_udp_server_task, "udp_server", 4096, state_controller_handle, 5, NULL);
 }
