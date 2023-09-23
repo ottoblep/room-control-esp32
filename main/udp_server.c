@@ -36,8 +36,9 @@ static void custom_udp_server_task(void *pvParameters) {
 
         int sock = socket(addr_family, SOCK_DGRAM, 0);
         if (sock < 0) {
-            ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
-            break;
+            ESP_LOGE(TAG, "Unable to create socket: errno %d. Retrying in one second ...", errno);
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            continue;
         }
         ESP_LOGI(TAG, "Socket created");
 
@@ -49,11 +50,11 @@ static void custom_udp_server_task(void *pvParameters) {
 
         int err = bind(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
-            ESP_LOGE(TAG, "Socket unable to bind: errno %d", errno);
-            break;
-        } else {
-            ESP_LOGI(TAG, "Socket bound, port %d", PORT);
+            ESP_LOGE(TAG, "Socket unable to bind: errno %d. Retrying in one second ...", errno);
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            continue;
         }
+        ESP_LOGI(TAG, "Socket bound, port %d", PORT);
 
         struct sockaddr_storage source_addr; // Large enough for both IPv4 or IPv6
         socklen_t socklen = sizeof(source_addr);
