@@ -18,7 +18,7 @@ void IRAM_ATTR button_isr() {
     xTaskNotifyGive(*state_task);
 }
 
-void setup_button_handler(TaskHandle_t* state_task_handle){
+void setup_button_handler(TaskHandle_t* state_task_handle) {
     /* Set the GPIO as a push/pull output */
     state_task = state_task_handle;
     gpio_reset_pin(GPIO_BUTTON_PIN);

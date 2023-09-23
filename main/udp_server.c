@@ -19,8 +19,7 @@
 
 static const char *TAG = "udp_server";
 
-static void custom_udp_server_task(void *pvParameters)
-{
+static void custom_udp_server_task(void *pvParameters) {
     char rx_buffer[128];
     char addr_str[128];
     int addr_family = (int)pvParameters;
@@ -81,7 +80,7 @@ static void custom_udp_server_task(void *pvParameters)
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
                 ESP_LOGI(TAG, "%s", rx_buffer);
 
-                if(strcmp(rx_buffer,"sw")==0){
+                if(strcmp(rx_buffer,"sw")==0) {
                     ESP_LOGI(TAG, "UDP Command received");
                     xTaskNotifyGive(*((TaskHandle_t *) pvParameters));
                 }
